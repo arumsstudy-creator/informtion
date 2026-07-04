@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indeks Kenyamanan Termal - Cekungan Bandung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f4c27 0%, #1a7d3d 50%, #2d9e5f 100%);
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 2rem;
+        }
+
+        .navbar {
+            background: rgba(15, 76, 39, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #a8ff6f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.5rem;
+            border: 2px solid #a8ff6f;
+            background: transparent;
+            color: #a8ff6f;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #a8ff6f;
+            color: #0f4c27;
+        }
+
+        .nav-btn.active {
+            background: #a8ff6f;
+            color: #0f4c27;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .guidebook {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            line-height: 1.8;
+        }
+
+        .guidebook h1 {
+            color: #0f4c27;
+            margin-bottom: 1.5rem;
+            font-size: 28px;
+            border-bottom: 3px solid #a8ff6f;
+            padding-bottom: 1rem;
+        }
+
+        .guidebook h2 {
+            color: #1a7d3d;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 22px;
+        }
+
+        .guidebook p {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .formula-box {
+            background: #e8f5e9;
+            border-left: 4px solid #a8ff6f;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .formula-box strong {
+            color: #0f4c27;
+            font-size: 18px;
+        }
+
+        .formula-box p {
+            margin-top: 1rem;
+            font-size: 14px;
+        }
+
+        .classification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .classification-card {
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .classification-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-sangat-nyaman {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+        }
+
+        .card-nyaman {
+            background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+        }
+
+        .card-sedang {
+            background: linear-gradient(135deg, #fbc02d 0%, #fdd835 100%);
+            color: #333;
+        }
+
+        .card-kurang {
+            background: linear-gradient(135deg, #f57c00 0%, #fb8c00 100%);
+        }
+
+        .card-tidak {
+            background: linear-gradient(135deg, #d32f2f 0%, #e53935 100%);
+        }
+
+        .card-title {
+            font-size: 14px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-range {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            border-bottom: 3px solid #a8ff6f;
+            padding-bottom: 1.5rem;
+        }
+
+        .quiz-header h2 {
+            color: #0f4c27;
+            font-size: 26px;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-progress {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: #a8ff6f;
+            width: 30px;
+            border-radius: 6px;
+        }
+
+        .progress-dot.completed {
+            background: #66bb6a;
+        }
+
+        .quiz-step {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .quiz-step.active {
+            display: block;
+        }
+
+        .question-box {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid #a8ff6f;
+            margin-bottom: 2rem;
+        }
+
+        .question-box h3 {
+            color: #0f4c27;
+            margin-bottom: 1rem;
+            font-size: 18px;
+        }
+
+        .question-box p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group {
+            margin: 2rem 0;
+        }
+
+        .input-group label {
+            display: block;
+            color: #0f4c27;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #a8ff6f;
+            box-shadow: 0 0 0 3px rgba(168, 255, 111, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: #999;
+        }
+
+        .slider-container {
+            margin: 1.5rem 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: #0f4c27;
+        }
+
+        .slider-value {
+            background: #a8ff6f;
+            color: #0f4c27;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 14px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #d32f2f 0%, #f57c00 25%, #fbc02d 50%, #66bb6a 75%, #1b5e20 100%);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 1rem 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 3px solid #a8ff6f;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 3px solid #a8ff6f;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-guide {
+            background: #f1f8e9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.8rem;
+            font-size: 13px;
+            color: #555;
+            border-left: 3px solid #a8ff6f;
+        }
+
+        .score-guide strong {
+            color: #0f4c27;
+        }
+
+        .feedback-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-correct {
+            background: #c8e6c9;
+            border-left: 4px solid #66bb6a;
+            color: #1b5e20;
+        }
+
+        .calculation-step {
+            background: #fff9c4;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border-left: 4px solid #fbc02d;
+            font-family: 'Courier New', monospace;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .calculation-step strong {
+            color: #0f4c27;
+            font-size: 16px;
+        }
+
+        .buttons-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #a8ff6f 0%, #7cb342 100%);
+            color: #0f4c27;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 255, 111, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #a8ff6f;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .result-title {
+            color: #0f4c27;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .result-value {
+            font-size: 56px;
+            font-weight: 700;
+            color: #a8ff6f;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .result-category {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a7d3d;
+        }
+
+        .final-summary {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .final-summary h3 {
+            color: #0f4c27;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #ddd;
+            color: #555;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #0f4c27;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .guidebook,
+            .quiz-container {
+                padding: 1.5rem;
+            }
+
+            .classification-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 42px;
+            }
+        }
+
+        .leaf-decoration {
+            position: fixed;
+            opacity: 0.1;
+            font-size: 100px;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .leaf-1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .leaf-2 { top: 30%; right: 5%; animation-delay: 1s; }
+        .leaf-3 { bottom: 20%; left: 10%; animation-delay: 2s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="leaf-decoration leaf-1">🌿</div>
+    <div class="leaf-decoration leaf-2">🍃</div>
+    <div class="leaf-decoration leaf-3">🌱</div>
+
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">🌍 Indeks Kenyamanan Termal Bandung</div>
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="switchSection('guidebook')">📚 Guidebook</button>
+                <button class="nav-btn" onclick="switchSection('quiz')">🎯 Interactive Quiz</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- SECTION 1: GUIDEBOOK -->
+        <section class="section active" id="guidebook">
+            <div class="guidebook">
+                <h1>📖 Panduan Indeks Kenyamanan Termal (IKT)</h1>
+
+                <h2>Apa itu Indeks Kenyamanan Termal?</h2>
+                <p>Indeks Kenyamanan Termal (IKT) adalah ukuran kuantitatif yang menggambarkan tingkat kenyamanan suhu di suatu daerah. IKT dihitung berdasarkan kombinasi dua parameter penting:</p>
+                <ul style="margin-left: 2rem; color: #555;">
+                    <li><strong>NDVI (Normalized Difference Vegetation Index)</strong> - Mengukur kepadatan vegetasi/ruang hijau</li>
+                    <li><strong>LST (Land Surface Temperature)</strong> - Mengukur suhu permukaan tanah</li>
+                </ul>
+
+                <h2>Rumus Perhitungan IKT</h2>
+                <div class="formula-box">
+                    <strong>IKT = Skor NDVI × Skor LST</strong>
+                    <p><strong>Range:</strong> 1 - 25 (dari 1×1 hingga 5×5)</p>
+                    <p style="font-size: 14px; margin-top: 0.5rem;">Catatan: Skor NDVI dan LST masing-masing berkisar 1-5</p>
+                </div>
+
+                <h2>Klasifikasi Indeks Kenyamanan Termal</h2>
+                <p>Semakin rendah nilai IKT, semakin tinggi tingkat kenyamanan. Berikut adalah klasifikasi:</p>
+
+                <div class="classification-grid">
+                    <div class="classification-card card-sangat-nyaman">
+                        <div class="card-title">Sangat Nyaman</div>
+                        <div class="card-range">1 - 5</div>
+                    </div>
+                    <div class="classification-card card-nyaman">
+                        <div class="card-title">Nyaman</div>
+                        <div class="card-range">6 - 10</div>
+                    </div>
+                    <div class="classification-card card-sedang">
+                        <div class="card-title">Sedang</div>
+                        <div class="card-range">11 - 15</div>
+                    </div>
+                    <div class="classification-card card-kurang">
+                        <div class="card-title">Kurang Nyaman</div>
+                        <div class="card-range">16 - 20</div>
+                    </div>
+                    <div class="classification-card card-tidak">
+                        <div class="card-title">Tidak Nyaman</div>
+                        <div class="card-range">21 - 25</div>
+                    </div>
+                </div>
+
+                <h2>Klasifikasi Skor NDVI (Vegetasi)</h2>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #e8f5e9;">
+                        <tr>
+                            <th style="padding: 0.8rem; border: 1px solid #ccc; text-align: left; color: #0f4c27;">Skor NDVI</th>
+                            <th style="padding: 0.8rem; border: 1px solid #ccc; text-align: left; color: #0f4c27;">Kategori Vegetasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">1</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Tidak Ada / Terbangun</td>
+                        </tr>
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">2</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Rendah (Lahan terbuka, industri)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">3</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Sedang (Pertanian, rumput)</td>
+                        </tr>
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">4</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Tinggi (Pohon, hutan ringan)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">5</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Sangat Tinggi (Hutan rapat)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Klasifikasi Skor LST (Suhu Permukaan)</h2>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #e8f5e9;">
+                        <tr>
+                            <th style="padding: 0.8rem; border: 1px solid #ccc; text-align: left; color: #0f4c27;">Skor LST</th>
+                            <th style="padding: 0.8rem; border: 1px solid #ccc; text-align: left; color: #0f4c27;">Rentang Suhu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">1</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Sangat Sejuk (< 22°C)</td>
+                        </tr>
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">2</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Sejuk (22-25°C)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">3</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Sedang (25-28°C)</td>
+                        </tr>
+                        <tr style="background: #f9f9f9;">
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">4</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Panas (28-31°C)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">5</td>
+                            <td style="padding: 0.8rem; border: 1px solid #ccc;">Sangat Panas (> 31°C)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Interpretasi Hasil</h2>
+                <p><strong>Nilai IKT yang rendah (1-5)</strong> menunjukkan daerah dengan vegetasi rapat dan suhu rendah, sehingga sangat nyaman untuk permukiman.</p>
+                <p><strong>Nilai IKT yang tinggi (16-25)</strong> menunjukkan daerah dengan minim vegetasi dan suhu tinggi, mengakibatkan ketidaknyamanan akibat Urban Heat Island.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: QUIZ -->
+        <section class="section" id="quiz">
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <h2>🎯 Interactive Quiz: Menghitung IKT</h2>
+                    <p>Input nama daerah dan tentukan nilai NDVI & LST dari peta Anda</p>
+                    <div class="quiz-progress" id="quizProgress"></div>
+                </div>
+
+                <!-- STEP 1: Input Area Name -->
+                <div class="quiz-step active" id="step-1">
+                    <div class="question-box">
+                        <h3>Langkah 1: Masukkan Nama Daerah</h3>
+                        <p>Ketik nama daerah yang ingin Anda analisis (contoh: Cimahi, Dayeuhkolot, Coblong, dll)</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="areaInput">Nama Daerah:</label>
+                        <input 
+                            type="text" 
+                            id="areaInput" 
+                            placeholder="Contoh: Cimahi Selatan, Dayeuhkolot, Coblong..."
+                            onkeyup="validateAreaInput()"
+                        >
+                    </div>
+
+                    <div id="feedback-1" class="feedback-box"></div>
+                    <div class="buttons-group">
+                        <button class="btn btn-primary" onclick="nextStep(1)" id="next-1" disabled>Lanjut →</button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Select NDVI Score -->
+                <div class="quiz-step" id="step-2">
+                    <div class="question-box">
+                        <h3>Langkah 2: Tentukan Skor NDVI (Vegetasi)</h3>
+                        <p id="step2-info"></p>
+                        <p>Lihat peta NDVI Anda dan geser slider sesuai dengan tingkat vegetasi daerah ini</p>
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Pilih Skor NDVI:</span>
+                            <span class="slider-value" id="ndvi-value">1</span>
+                        </div>
+                        <input 
+                            type="range" 
+                            id="ndviSlider" 
+                            min="1" 
+                            max="5" 
+                            value="1"
+                            oninput="updateNDVISlider(this.value)"
+                        >
+                        <div class="score-guide">
+                            <strong>1:</strong> Tidak Ada/Terbangun | 
+                            <strong>2:</strong> Rendah | 
+                            <strong>3:</strong> Sedang | 
+                            <strong>4:</strong> Tinggi | 
+                            <strong>5:</strong> Sangat Tinggi
+                        </div>
+                    </div>
+
+                    <div id="feedback-2" class="feedback-box"></div>
+                    <div class="buttons-group">
+                        <button class="btn btn-secondary" onclick="previousStep(2)">← Kembali</button>
+                        <button class="btn btn-primary" onclick="nextStep(2)">Lanjut →</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Select LST Score -->
+                <div class="quiz-step" id="step-3">
+                    <div class="question-box">
+                        <h3>Langkah 3: Tentukan Skor LST (Suhu Permukaan)</h3>
+                        <p id="step3-info"></p>
+                        <p>Lihat peta LST Anda dan geser slider sesuai dengan suhu daerah ini</p>
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Pilih Skor LST:</span>
+                            <span class="slider-value" id="lst-value">1</span>
+                        </div>
+                        <input 
+                            type="range" 
+                            id="lstSlider" 
+                            min="1" 
+                            max="5" 
+                            value="1"
+                            oninput="updateLSTSlider(this.value)"
+                        >
+                        <div class="score-guide">
+                            <strong>1:</strong> < 22°C | 
+                            <strong>2:</strong> 22-25°C | 
+                            <strong>3:</strong> 25-28°C | 
+                            <strong>4:</strong> 28-31°C | 
+                            <strong>5:</strong> > 31°C
+                        </div>
+                    </div>
+
+                    <div id="feedback-3" class="feedback-box"></div>
+                    <div class="buttons-group">
+                        <button class="btn btn-secondary" onclick="previousStep(3)">← Kembali</button>
+                        <button class="btn btn-primary" onclick="nextStep(3)">Lanjut →</button>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Result -->
+                <div class="quiz-step" id="step-4">
+                    <div class="question-box">
+                        <h3>Langkah 4: Hasil Perhitungan IKT</h3>
+                        <p>Berikut adalah hasil analisis Indeks Kenyamanan Termal untuk daerah Anda:</p>
+                    </div>
+
+                    <div class="calculation-step" id="calculation-display"></div>
+
+                    <div class="result-box">
+                        <div class="result-title">Hasil Perhitungan</div>
+                        <div class="result-value" id="result-ikt">-</div>
+                        <div class="result-category" id="result-category">-</div>
+                    </div>
+
+                    <h3 style="color: #0f4c27; margin-top: 2rem; margin-bottom: 1rem;">📊 Ringkasan Analisis</h3>
+                    <div class="final-summary" id="summary-box"></div>
+
+                    <div class="buttons-group">
+                        <button class="btn btn-secondary" onclick="previousStep(4)">← Kembali</button>
+                        <button class="btn btn-primary" onclick="resetQuiz()">🔄 Analisis Daerah Lain</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let selectedArea = null;
+        let selectedNDVI = null;
+        let selectedLST = null;
+
+        function switchSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (section === 'quiz' && !document.getElementById('quizProgress').innerHTML) {
+                initQuizProgress();
+            }
+        }
+
+        function initQuizProgress() {
+            const progress = document.getElementById('quizProgress');
+            for (let i = 0; i < 4; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+                dot.id = 'dot-' + (i + 1);
+                progress.appendChild(dot);
+            }
+        }
+
+        function validateAreaInput() {
+            const input = document.getElementById('areaInput').value.trim();
+            const feedback = document.getElementById('feedback-1');
+            const nextBtn = document.getElementById('next-1');
+
+            if (input.length > 0) {
+                selectedArea = input;
+                feedback.innerHTML = `✓ Daerah: <strong>${input}</strong> - Siap untuk analisis!`;
+                feedback.classList.add('show', 'feedback-correct');
+                nextBtn.disabled = false;
+            } else {
+                feedback.classList.remove('show');
+                nextBtn.disabled = true;
+            }
+        }
+
+        function updateNDVISlider(value) {
+            selectedNDVI = parseInt(value);
+            document.getElementById('ndvi-value').textContent = value;
+        }
+
+        function updateLSTSlider(value) {
+            selectedLST = parseInt(value);
+            document.getElementById('lst-value').textContent = value;
+        }
+
+        function nextStep(currentStep) {
+            const nextStep = currentStep + 1;
+            
+            document.getElementById('dot-' + currentStep).classList.remove('active');
+            document.getElementById('dot-' + currentStep).classList.add('completed');
+            document.getElementById('dot-' + nextStep).classList.add('active');
+
+            if (nextStep === 2) {
+                document.getElementById('step2-info').innerHTML = `Daerah: <strong>${selectedArea}</strong>`;
+            } else if (nextStep === 3) {
+                document.getElementById('step3-info').innerHTML = `Daerah: <strong>${selectedArea}</strong> | Skor NDVI: <strong>${selectedNDVI}</strong>`;
+            } else if (nextStep === 4) {
+                calculateIKT();
+            }
+
+            document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + nextStep).classList.add('active');
+        }
+
+        function previousStep(currentStep) {
+            const prevStep = currentStep - 1;
+
+            document.getElementById('dot-' + currentStep).classList.remove('active');
+            document.getElementById('dot-' + currentStep).classList.remove('completed');
+            document.getElementById('dot-' + prevStep).classList.add('active');
+
+            document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + prevStep).classList.add('active');
+        }
+
+        function calculateIKT() {
+            const ikt = selectedNDVI * selectedLST;
+
+            let category = '';
+            let categoryColor = '';
+
+            if (ikt >= 1 && ikt <= 5) {
+                category = 'SANGAT NYAMAN 🟢';
+                categoryColor = '#1b5e20';
+            } else if (ikt >= 6 && ikt <= 10) {
+                category = 'NYAMAN 🟢';
+                categoryColor = '#43a047';
+            } else if (ikt >= 11 && ikt <= 15) {
+                category = 'SEDANG 🟡';
+                categoryColor = '#f57f17';
+            } else if (ikt >= 16 && ikt <= 20) {
+                category = 'KURANG NYAMAN 🟠';
+                categoryColor = '#f57c00';
+            } else {
+                category = 'TIDAK NYAMAN 🔴';
+                categoryColor = '#d32f2f';
+            }
+
+            document.getElementById('calculation-display').innerHTML = `
+                <strong>Rumus:</strong> IKT = Skor NDVI × Skor LST<br><br>
+                <strong>Perhitungan:</strong><br>
+                IKT = ${selectedNDVI} × ${selectedLST}<br>
+                <strong style="font-size: 18px;">IKT = ${ikt}</strong>
+            `;
+
+            document.getElementById('result-ikt').textContent = ikt;
+            document.getElementById('result-ikt').style.color = categoryColor;
+            document.getElementById('result-category').textContent = category;
+            document.getElementById('result-category').style.color = categoryColor;
+
+            document.getElementById('summary-box').innerHTML = `
+                <div class="summary-item">
+                    <span>Daerah:</span>
+                    <span class="summary-value">${selectedArea}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Skor NDVI (Vegetasi):</span>
+                    <span class="summary-value">${selectedNDVI}/5</span>
+                </div>
+                <div class="summary-item">
+                    <span>Skor LST (Suhu):</span>
+                    <span class="summary-value">${selectedLST}/5</span>
+                </div>
+                <div class="summary-item">
+                    <span>Indeks Kenyamanan Termal:</span>
+                    <span class="summary-value" style="color: ${categoryColor}; font-size: 18px;">${ikt}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Tingkat Kenyamanan:</span>
+                    <span class="summary-value" style="color: ${categoryColor};">${category}</span>
+                </div>
+            `;
+        }
+
+        function resetQuiz() {
+            selectedArea = null;
+            selectedNDVI = null;
+            selectedLST = null;
+
+            document.getElementById('areaInput').value = '';
+            document.getElementById('ndviSlider').value = 1;
+            document.getElementById('lstSlider').value = 1;
+            document.getElementById('ndvi-value').textContent = '1';
+            document.getElementById('lst-value').textContent = '1';
+
+            document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-1').classList.add('active');
+
+            document.querySelectorAll('.feedback-box').forEach(fb => fb.classList.remove('show'));
+            document.getElementById('next-1').disabled = true;
+
+            document.querySelectorAll('.progress-dot').forEach(dot => {
+                dot.classList.remove('active', 'completed');
+            });
+            document.getElementById('dot-1').classList.add('active');
+        }
+
+        // Initialize
+        initQuizProgress();
+    </script>
+</body>
+</html>
